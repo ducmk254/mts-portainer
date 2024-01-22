@@ -1,0 +1,27 @@
+# docker-compose.yml 
+version: '3.9'
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    labels:
+      - com.zabbix.agentd.hostname="Zabbix server"
+      - com.zabbix.agentd.templates="Docker by Zabbix agent 2"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./portainer-data:/data
+    ports:
+      - 9010:9000
+    networks:
+      portainer-nw:
+networks:
+  portainer-nw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.200.32.0/20
